@@ -75,7 +75,7 @@ const Login = () => {
 
             <Link
               to='/reset-password'
-              className='text-sm text-right text-blue font-semibold'
+              className='text-sm my-3 text-right text-blue font-semibold'
             >
               Forgot Password ?
             </Link>
