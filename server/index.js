@@ -17,7 +17,13 @@ dotenv.config();
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, "views/build")));
+// Serve files from the views directory
+app.use(express.static(path.join(__dirname, "views")));
+
+// app.use((req, res, next) => {
+//   console.log(`Request for: ${req.url}`);  // Logs the URL being requested
+//   next(); // Passes control to the next middleware or route
+// });
 
 const PORT = process.env.PORT || 8800;
 
