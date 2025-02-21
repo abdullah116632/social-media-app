@@ -15,65 +15,54 @@ export const verifyEmail = async (req, res) => {
   try {
     const result = await Verification.findOne({ userId });
 
-    if (result) {
-      const { expiresAt, token: hashedToken } = result;
+    if (!result) {
+      const message = "Invalid verification link.";
+      return res.redirect(`/users/verified?status=error&message=${message}`);
+    }
 
-      // token has expires
-      if (expiresAt < Date.now()) {
-        Verification.findOneAndDelete({ userId })
-          .then(() => {
-            Users.findOneAndDelete({ _id: userId })
-              .then(() => {
-                const message = "Verification token has expired.";
-                res.redirect(`/users/verified?status=error&message=${message}`);
-              })
-              .catch((err) => {
-                res.redirect(`/users/verified?status=error&message=`);
-              });
-          })
-          .catch((error) => {
-            console.log(error);
-            res.redirect(`/users/verified?message=`);
-          });
-      } else {
-        //token valid
-        compareString(token, hashedToken)
-          .then((isMatch) => {
-            if (isMatch) {
-              Users.findOneAndUpdate({ _id: userId }, { verified: true })
-                .then(() => {
-                  Verification.findOneAndDelete({ userId }).then(() => {
-                    const message = "Email verified successfully";
-                    res.redirect(
-                      `/users/verified?status=success&message=${message}`
-                    );
-                  });
-                })
-                .catch((err) => {
-                  console.log(err);
-                  const message = "Verification failed or link is invalid";
-                  res.redirect(
-                    `/users/verified?status=error&message=${message}`
-                  );
-                });
-            } else {
-              // invalid token
-              const message = "Verification failed or link is invalid";
-              res.redirect(`/users/verified?status=error&message=${message}`);
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            res.redirect(`/users/verified?message=`);
-          });
+    const { expiresAt, token: hashedToken } = result;
+
+    // Check if the token has expired
+    if (expiresAt < Date.now()) {
+      try {
+        await Verification.findOneAndDelete({ userId });
+        await Users.findOneAndDelete({ _id: userId });
+
+        const message =
+          "Verification token has expired. Please register again.";
+        return res.redirect(`/users/verified?status=error&message=${message}`);
+      } catch (error) {
+        console.error("Error deleting expired verification:", error);
+        return res.redirect(`/users/verified?status=error&message=`);
       }
-    } else {
-      const message = "Invalid verification link. Try again later.";
-      res.redirect(`/users/verified?status=error&message=${message}`);
+    }
+
+    // Token is valid, verify it
+    const isMatch = await compareString(token, hashedToken);
+
+    if (!isMatch) {
+      const message =
+        "Invalid verification token. Please check your email and try again.";
+      return res.redirect(`/users/verified?status=error&message=${message}`);
+    }
+
+    try {
+      await Users.findOneAndUpdate({ _id: userId }, { verified: true });
+
+      // Delete verification record after success
+      await Verification.findOneAndDelete({ userId });
+
+      const message = "Your email has been successfully verified!";
+      return res.redirect(`/users/verified?status=success&message=${message}`);
+    } catch (error) {
+      console.error("Error updating user verification status:", error);
+      const message = "Verification process failed. Please try again later.";
+      return res.redirect(`/users/verified?status=error&message=${message}`);
     }
   } catch (error) {
-    console.log(err);
-    res.redirect(`/users/verified?message=`);
+    console.error("Verification error:", error);
+    const message = "An unexpected error occurred. Please try again later.";
+    return res.redirect(`/users/verified?status=error&message=${message}`);
   }
 };
 
@@ -108,63 +97,70 @@ export const requestPasswordReset = async (req, res) => {
 };
 
 export const resetPassword = async (req, res) => {
-  const { userId, token } = req.params;
+  const { id: userId, token, password } = req.body;
 
   try {
     // find record
     const user = await Users.findById(userId);
 
     if (!user) {
-      const message = "Invalid password reset link. Try again";
-      res.redirect(`/users/resetpassword?status=error&message=${message}`);
+      return res.status(404).json({
+        status: "failed",
+        message: "Invalid password reset link. Try again",
+      });
     }
 
     const resetPassword = await PasswordReset.findOne({ userId });
 
     if (!resetPassword) {
-      const message = "Invalid password reset link. Try again";
-      return res.redirect(
-        `/users/resetpassword?status=error&message=${message}`
-      );
+      return res.status(404).json({
+        status: "failed",
+        message: "Invalid password reset link. Try again",
+      });
     }
 
-    const { expiresAt, token: resetToken } = resetPassword;
+    const { expiresAt, token: storedResetToken } = resetPassword;
 
     if (expiresAt < Date.now()) {
-      const message = "Reset Password link has expired. Please try again";
-      res.redirect(`/users/resetpassword?status=error&message=${message}`);
-    } else {
-      const isMatch = await compareString(token, resetToken);
-
-      if (!isMatch) {
-        const message = "Invalid reset password link. Please try again";
-        res.redirect(`/users/resetpassword?status=error&message=${message}`);
-      } else {
-        res.redirect(`/users/resetpassword?type=reset&id=${userId}`);
-      }
+      return res.status(400).json({
+        status: "failed",
+        message: "Reset Password link has expired. Please try again",
+      });
     }
-  } catch (error) {
-    console.log(error);
-    res.status(404).json({ message: error.message });
-  }
-};
+    const isMatch = await compareString(token, storedResetToken);
 
-export const changePassword = async (req, res, next) => {
-  try {
-    const { userId, password } = req.body;
+    if (!isMatch) {
+      return res.status(400).json({
+        status: "failed",
+        message: "Invalid reset password link. Please try again",
+      });
+    }
 
-    const hashedpassword = await hashString(password);
+    let hashedPassword;
+    try {
+      hashedPassword = await hashString(password);
+    } catch (error) {
+      return res
+        .status(500)
+        .json({
+          status: "failed",
+          message: "Error hashing password. Please try again.",
+        });
+    }
+    user.password = hashedPassword;
 
-    const user = await Users.findByIdAndUpdate(
-      { _id: userId },
-      { password: hashedpassword }
-    );
+    const savedUser = await user.save();
 
-    if (user) {
+    if (savedUser) {
       await PasswordReset.findOneAndDelete({ userId });
 
-      res.status(200).json({
-        ok: true,
+      const token = createJWT(user?._id);
+
+      res.status(201).json({
+        success: true,
+        message: "Password reset successfully. You can now log in.",
+        user,
+        token,
       });
     }
   } catch (error) {
@@ -172,6 +168,15 @@ export const changePassword = async (req, res, next) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+// export const changePassword = async (req, res, next) => {
+//   try {
+//     const { userId, password } = req.body;
+//   } catch (error) {
+//     console.log(error);
+//     res.status(404).json({ message: error.message });
+//   }
+// };
 
 export const getUser = async (req, res, next) => {
   try {

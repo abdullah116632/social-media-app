@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema(
       select: true,
     },
     location: { type: String },
-    profileUrl: { type: String },
+    profileUrl: { type: String },   // this is profile picture image url.
     profession: { type: String },
     friends: [{ type: Schema.Types.ObjectId, ref: "Users" }],
     views: [{ type: String }],

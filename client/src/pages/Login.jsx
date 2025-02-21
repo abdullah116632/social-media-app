@@ -8,9 +8,16 @@ import { AiOutlineInteraction } from "react-icons/ai";
 import { ImConnection } from "react-icons/im";
 import { CustomButton, Loading, TextInput } from "../components";
 import { BgImage } from "../assets";
+import { apiRequest } from "../utils";
+import { UserLogin } from "../redux/userSlice";
 
 
 const Login = () => {
+
+  const [errMsg, setErrMsg] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -19,11 +26,32 @@ const Login = () => {
     mode: "onChange",
   });
 
-  const onSubmit = async (data) => {};
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
+    try{
+      const res = await apiRequest({
+        url: "/auth/login",
+        data: data,
+        method: "POST"
+      })
 
-  const [errMsg, setErrMsg] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const dispatch = useDispatch();
+      if(res?.status === "failed"){
+        setErrMsg(res);
+      }else{
+        setErrMsg("");
+
+        const newData = {token: res?.token, ...res?.user};
+        dispatch(UserLogin(newData));
+        window.location.replace("/")
+      }
+
+      setIsSubmitting(false)
+    }catch(err){
+      console.log(err)
+      setIsSubmitting(false)
+    }
+  };
+
   return (
     <div className='bg-bgColor w-full h-[100vh] flex items-center justify-center p-6'>
       <div className='w-full md:w-2/3 h-fit lg:h-full 2xl:h-5/6 py-8 lg:py-0 flex bg-primary rounded-xl overflow-hidden shadow-xl'>
@@ -74,7 +102,7 @@ const Login = () => {
             />
 
             <Link
-              to='/reset-password'
+              to='/forget-password'
               className='text-sm my-3 text-right text-blue font-semibold'
             >
               Forgot Password ?

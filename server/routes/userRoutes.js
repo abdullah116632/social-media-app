@@ -1,6 +1,6 @@
 import express from "express";
 import path from "path";
-import { acceptRequest, changePassword, friendRequest, getFriendRequest, getUser, profileViews, requestPasswordReset, resetPassword, suggestedFriends, updateUser, verifyEmail } from "../controllers/userController.js";
+import { acceptRequest,  friendRequest, getFriendRequest, getUser, profileViews, requestPasswordReset, resetPassword, suggestedFriends, updateUser, verifyEmail } from "../controllers/userController.js";
 import userAuth from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -9,8 +9,8 @@ const __dirname = path.resolve(path.dirname(""));
 router.get("/verify/:userId/:token", verifyEmail);
 
 router.post("/request-passwordreset", requestPasswordReset);
-router.get("/reset-password/:userId/:token", resetPassword);
-router.post("/reset-password", changePassword);
+router.post("/reset-password", resetPassword);
+// router.post("/reset-password", changePassword);
 
 // user routes
 router.post("/get-user/:id?", userAuth, getUser);
@@ -32,8 +32,8 @@ router.post("/suggested-friends", userAuth, suggestedFriends);
 router.get("/verified", (req, res) => {
     res.sendFile(path.join(__dirname, "./views", "index.html"));
 });
-router.get("/resetpassword", (req, res) => {
-    res.sendFile(path.join(__dirname, "./views", "index.html"));
-  });
+// router.get("/resetpassword", (req, res) => {
+//     res.sendFile(path.join(__dirname, "./views", "index.html"));
+//   });
 
 export default router;

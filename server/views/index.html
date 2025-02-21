@@ -3,75 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verification Status</title>
-    <style>
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f9;
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            text-align: center;
-            padding: 20px;
-            background: #ffffff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            width: 80%;
-            max-width: 500px;
-        }
-        .title {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-        .success {
-            color: #4CAF50;
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            padding: 15px;
-            border-radius: 8px;
-        }
-        .error {
-            color: #d32f2f;
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-            padding: 15px;
-            border-radius: 8px;
-        }
-        .message {
-            font-size: 18px;
-            color: #555555;
-            margin-bottom: 20px;
-        }
-        a {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-        a:hover {
-            background-color: #45a049;
-        }
-        .error a {
-            background-color: #d32f2f;
-        }
-        .error a:hover {
-            background-color: #c62828;
-        }
-    </style>
+    <title>Email Verification Status</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
     <div class="container">
-        <h1 id="title" class="title"></h1>
-        <p id="message" class="message"></p>
-        <a id="link" href="/">Go to Homepage</a>
+        <div id="status-box">
+            <h2 id="status-title">Processing...</h2>
+            <p id="status-message">Please wait while we verify your email.</p>
+            <a id="action-link" href="#">Go to Homepage</a>
+        </div>
     </div>
+
     <script src="/script.js"></script>
 </body>
 </html>

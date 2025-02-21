@@ -7,7 +7,7 @@ import PasswordReset from "../models/passwordReset.js";
 
 dotenv.config();
 
-const { MAIL_USERNAME, MAIL_PASSWORD, APP_URL, MAIL_PORT, MAIL_SERVICE } = process.env;
+const { MAIL_USERNAME, MAIL_PASSWORD, APP_URL, MAIL_PORT, MAIL_SERVICE, FRONTEND_URL } = process.env;
 
 const transporter = nodemailer.createTransport({
   service: MAIL_SERVICE,
@@ -24,7 +24,7 @@ export const sendVerificationEmail = async (user, res) => {
 
   const token = _id + uuidv4();
 
-  const link = APP_URL + "users/verify/" + _id + "/" + token;
+  const link = APP_URL + "/users/verify/" + _id + "/" + token;
 
   //   mail options
   const mailOptions = {
@@ -80,7 +80,8 @@ export const resetPasswordLink = async (user, res) => {
   const { _id, email } = user;
 
   const token = _id + uuidv4();
-  const link = APP_URL + "users/reset-password/" + _id + "/" + token;
+  const link = FRONTEND_URL + "/reset-password/" + _id + "/" + token;
+  console.log(link)
 
   //   mail options
   const mailOptions = {
@@ -108,18 +109,12 @@ export const resetPasswordLink = async (user, res) => {
     });
 
     if (resetEmail) {
-      transporter
-        .sendMail(mailOptions)
-        .then(() => {
-          res.status(201).send({
-            success: "PENDING",
-            message: "Reset Password Link has been sent to your account.",
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          res.status(404).json({ message: "Something went wrong" });
-        });
+      await transporter.sendMail(mailOptions);
+      
+      res.status(201).send({
+        success: "PENDING",
+        message: "Reset Password Link has been sent to your account.",
+      });
     }
   } catch (error) {
     console.log(error);

@@ -1,5 +1,7 @@
-import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
+
+import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import bodyParser from "body-parser";
@@ -7,13 +9,12 @@ import path from "path";
 
 //securty packges
 import helmet from "helmet";
-import dbConnection from "./dbConfig/index.js";
+import dbConnection from "./config/dbConfig.js";
 import errorMiddleware from "./middleware/errorMiddleware.js";
 import router from "./routes/index.js";
 
 const __dirname = path.resolve(path.dirname(""));
 
-dotenv.config();
 
 const app = express();
 
