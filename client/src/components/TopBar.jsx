@@ -1,5 +1,4 @@
-import React from "react";
-import { TbSocial } from "react-icons/tb";
+import { TiSocialSkypeOutline } from "react-icons/ti";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import TextInput from "./TextInput";
@@ -7,11 +6,14 @@ import CustomButton from "./CustomButton";
 import { useForm } from "react-hook-form";
 import { BsMoon, BsSunFill } from "react-icons/bs";
 import { IoMdNotificationsOutline } from "react-icons/io";
+import { MdOutlineNotificationsOff } from "react-icons/md";
 import { SetTheme } from "../redux/theme";
 import { Logout } from "../redux/userSlice";
 import { fetchPosts } from "../utils";
+import { useState } from "react";
 
 const TopBar = () => {
+  const [showNotification, setShowNotification] = useState(true);
   const { theme } = useSelector((state) => state.theme);
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -31,11 +33,13 @@ const TopBar = () => {
     await fetchPosts(user.token, dispatch, "", data);
   };
 
+  const handleNotification = () => setShowNotification((val) => val === true ? false : true)
+
   return (
-    <div className='topbar w-full flex items-center justify-between py-3 md:py-6 px-4 bg-primary'>
+    <div className='topbar w-full flex items-center justify-between py-3 px-4 bg-primary'>
       <Link to='/' className='flex gap-2 items-center'>
         <div className='p-1 md:p-2 bg-[#065ad8] rounded text-white'>
-          <TbSocial />
+          <TiSocialSkypeOutline />
         </div>
         <span className='text-xl md:text-2xl text-[#065ad8] font-semibold'>
           Funbook
@@ -61,10 +65,12 @@ const TopBar = () => {
       {/* ICONS */}
       <div className='flex gap-4 items-center text-ascent-1 text-md md:text-xl'>
         <button onClick={() => handleTheme()}>
-          {theme ? <BsMoon /> : <BsSunFill />}
+          {theme !== "dark" ? <BsMoon /> : <BsSunFill />}
         </button>
-        <div className='hidden lg:flex'>
-          <IoMdNotificationsOutline />
+        <div className='hidden lg:flex cursor-pointer' onClick={handleNotification}>
+          {
+            showNotification === true ? <IoMdNotificationsOutline /> : <MdOutlineNotificationsOff />
+          }
         </div>
 
         <div>

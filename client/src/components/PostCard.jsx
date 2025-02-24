@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form";
 import TextInput from "./TextInput";
 import Loading from "./Loading";
 import CustomButton from "./CustomButton";
-import { postComments } from "../assets/data";
 import { apiRequest } from "../utils";
 
 const getPostComments = async (id) => {

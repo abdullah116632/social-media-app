@@ -1,19 +1,14 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { CustomButton, Loading, TextInput } from "../components";
-import { BgImage } from "../assets";
 import { apiRequest } from "../utils";
-import { UserLogin } from "../redux/userSlice";
 
 const Register = () => {
 
   const [errMsg, setErrMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { id, token } = useParams();
-  const dispatch = useDispatch();
 
   const {
     register,
