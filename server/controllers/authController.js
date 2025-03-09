@@ -6,10 +6,10 @@ import { compareString, createJWT, hashString } from "../utils/index.js";
 import { sendVerificationEmail } from "../utils/sendEmail.js";
 
 export const register = async (req, res, next) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { firstName, lastName, email, password, profileUrl } = req.body;
 
   //validate fileds
-  if (!(firstName || lastName || email || password)) {
+  if (!(firstName || lastName || email || password || profileUrl)) {
     next("Provide Required Fields!");
     return;
   }
@@ -29,6 +29,7 @@ export const register = async (req, res, next) => {
       lastName,
       email,
       password: hashedPassword,
+      profileUrl,
     });
 
     //send email verification to user

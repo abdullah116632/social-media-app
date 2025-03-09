@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport({
 
 export const sendVerificationEmail = async (user, res) => {
 
-  const { _id, email, lastName } = user;
+  const { _id, email, firstName, lastName } = user;
 
   const token = _id + uuidv4();
 
@@ -35,7 +35,7 @@ export const sendVerificationEmail = async (user, res) => {
     style='font-family: Arial, sans-serif; font-size: 20px; color: #333; background-color: #f7f7f7; padding: 20px; border-radius: 5px;'>
     <h3 style="color: rgb(8, 56, 188)">Please verify your email address</h3>
     <hr>
-    <h4>Hi ${lastName},</h4>
+    <h4>Hi ${firstName+ " "+ lastName},</h4>
     <p>
         Please verify your email address so we can know that it's really you.
         <br>

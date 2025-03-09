@@ -1,5 +1,6 @@
 import axios from "axios";
 import { SetPosts } from "../redux/postSlice";
+import { SetResult } from "../redux/searchSlice";
 
 const cloudName = process.env.REACT_APP_CLOUD_NAME;
 
@@ -29,29 +30,20 @@ export const apiRequest = async ({ url, token, data, method }) => {
 };
 
 export const handleFileUpload = async (uploadFile) => {
-  console.log("request come", uploadFile);
   try {
-    // Step 1: Get the signature and timestamp from your server
+
     const { data } = await axios.post(`${API_URL}/auth/generate-signature`);
     const { signature, timestamp, api_key } = data;
 
-    console.log("Received Signature Data:", data);
 
-
-    // Step 2: Prepare the form data
     const formData = new FormData();
     formData.append("file", uploadFile);
     formData.append("folder", "socialmedia/uploads");
-    formData.append("upload_preset", "socialmedia"); // ✅ Ensure preset is included
+    formData.append("upload_preset", "socialmedia"); 
     formData.append("timestamp", timestamp);
     formData.append("signature", signature);
     formData.append("api_key", api_key);
 
-    console.log("api key", api_key)
-
-
-    // Step 3: Upload the file to Cloudinary
-    console.log("cloud_name", cloudName)
     const response = await axios.post(
       `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
       formData,
@@ -60,10 +52,7 @@ export const handleFileUpload = async (uploadFile) => {
       }
     );
 
-    console.log("responese ", response);
-
-    console.log("Cloudinary Response:", response);
-    return response.data.secure_url; // Get uploaded file URL
+    return response.data.secure_url; 
   } catch (error) {
     console.error(
       "Upload Error:",
@@ -165,3 +154,21 @@ export const viewUserProfile = async (token, id) => {
     console.log(error);
   }
 };
+
+export const searchResult = async (token, dispatch, uri, data) => {
+  console.log("uri", uri)
+  try {
+    const res = await apiRequest({
+      url: uri || "/search",
+      token: token,
+      method: "GET",
+      data: data || {},
+    });
+
+    dispatch(SetResult(res?.data));
+    console.log(res);
+    return;
+  } catch (error) {
+    console.log(error);
+  }
+}

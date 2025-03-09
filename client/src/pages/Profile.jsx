@@ -43,15 +43,15 @@ const Profile = () => {
     setLoading(true)
     getUser()
     getPosts()
-  },[])
+  },[id])
 
   return (
     <>
-      <div className='home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
+      <div className='home w-full px-0 md:px-4 bg-bgColor h-screen overflow-hidden'>
         <TopBar />
-        <div className='w-full flex gap-2 lg:gap-4 md:pl-4 pt-5 pb-10 h-full'>
+        <div className='w-full flex gap-2 lg:gap-4 pt-2 h-full'>
           {/* LEFT */}
-          <div className='hidden w-1/3 lg:w-1/4 md:flex flex-col gap-6 overflow-y-auto'>
+          <div className='hidden w-1/3 lg:w-[30%] h-full md:flex flex-col gap-6 overflow-y-auto'>
             <ProfileCard user={userInfo} />
 
             <div className='block lg:hidden'>
@@ -60,7 +60,7 @@ const Profile = () => {
           </div>
 
           {/* CENTER */}
-          <div className=' flex-1 h-full bg-orimary px-4 flex flex-col gap-6 overflow-y-auto'>
+          <div className=' flex-1 h-full bg-orimary px-4 flex flex-col gap-6 overflow-y-auto rounded-lg'>
             {loading ? (
               <Loading />
             ) : posts?.length > 0 ? (
@@ -81,7 +81,7 @@ const Profile = () => {
           </div>
 
           {/* RIGHT */}
-          <div className='hidden w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto'>
+          <div className='hidden w-[30%] h-full lg:flex flex-col gap-8 overflow-y-auto'>
             <FriendsCard friends={userInfo?.friends} />
           </div>
         </div>

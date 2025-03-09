@@ -8,9 +8,11 @@ import { BsMoon, BsSunFill } from "react-icons/bs";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { MdOutlineNotificationsOff } from "react-icons/md";
 import { SetTheme } from "../redux/theme";
-import { Logout } from "../redux/userSlice";
-import { fetchPosts } from "../utils";
+import { openModal } from "../redux/modalSlice";
+
+import { searchResult } from "../utils";
 import { useState } from "react";
+import { handleResultBox, handleLoading } from "../redux/searchSlice";
 
 const TopBar = () => {
   const [showNotification, setShowNotification] = useState(true);
@@ -30,13 +32,17 @@ const TopBar = () => {
   };
 
   const handleSearch = async (data) => {
-    await fetchPosts(user.token, dispatch, "", data);
+    dispatch(handleLoading(true))
+    // await fetchPosts(user.token, dispatch, "", data);
+    await searchResult(user.token, dispatch, `/search?query=${data.search}`)
+    dispatch(handleLoading(false))
+    dispatch(handleResultBox(true))
   };
 
   const handleNotification = () => setShowNotification((val) => val === true ? false : true)
 
   return (
-    <div className='topbar w-full flex items-center justify-between py-3 px-4 bg-primary'>
+    <div className='topbar w-full flex items-center justify-between py-3 px-4 bg-primary md:rounded-b-lg'>
       <Link to='/' className='flex gap-2 items-center'>
         <div className='p-1 md:p-2 bg-[#065ad8] rounded text-white'>
           <TiSocialSkypeOutline />
@@ -75,7 +81,7 @@ const TopBar = () => {
 
         <div>
           <CustomButton
-            onClick={() => dispatch(Logout())}
+            onClick={() => dispatch(openModal({ modalType: "logoutConfirm" }))}
             title='Log Out'
             containerStyles='text-sm text-ascent-1 px-4 md:px-6 py-1 md:py-2 border border-[#666] rounded-full'
           />

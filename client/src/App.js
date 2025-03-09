@@ -1,7 +1,9 @@
 import {Navigate, Outlet, Route, Routes, useLocation} from "react-router-dom"
 import {useSelector} from "react-redux";
 import { Home, Login, Profile, Register, ResetPassword, ForgetPassword } from "./pages";
+import Modal from "./components/Modal"
 import NotFound from "./pages/NotFound";
+import SearchResult from "./pages/SearchResult";
 
 function Layout(){
   const {user} = useSelector((state) => state.user);
@@ -18,6 +20,7 @@ function Layout(){
 
 function App() {
   const {theme} = useSelector((state) => state.theme)
+  const {openResultBox} = useSelector((state) => state.search);
   return (
     <div data-theme={theme} className="w-full min-h-[100vh]">
       <Routes>
@@ -32,6 +35,8 @@ function App() {
         <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      {openResultBox && <SearchResult />}
+      <Modal />
     </div>
   );
 }
