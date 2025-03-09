@@ -2,7 +2,7 @@ import {Navigate, Outlet, Route, Routes, useLocation} from "react-router-dom"
 import {useSelector} from "react-redux";
 import { Home, Login, Profile, Register, ResetPassword, ForgetPassword } from "./pages";
 import Modal from "./components/Modal"
-import NotFound from "./pages/NotFound";
+import NotFoundPage from "./pages/NotFoundPage";
 import SearchResult from "./pages/SearchResult";
 
 function Layout(){
@@ -33,7 +33,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       {openResultBox && <SearchResult />}
       <Modal />
