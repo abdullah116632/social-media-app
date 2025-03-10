@@ -135,11 +135,24 @@ export const sendFriendRequest = async (token, id) => {
       data: { requestTo: id },
     });
 
-    return;
+    return res;
   } catch (error) {
     console.log(error);
   }
 };
+
+export const cancelFriendRequest = async (token, id) => {
+  try{
+    const res = await apiRequest({
+      url: "/users/cancel-friend-request",
+      token,
+      method: "POST",
+      data: {requestTo: id}
+    })
+  }catch(e){
+    console.log(e)
+  }
+}
 
 export const viewUserProfile = async (token, id) => {
   try {
@@ -166,7 +179,6 @@ export const searchResult = async (token, dispatch, uri, data) => {
     });
 
     dispatch(SetResult(res?.data));
-    console.log(res);
     return;
   } catch (error) {
     console.log(error);

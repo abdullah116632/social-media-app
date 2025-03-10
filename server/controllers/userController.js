@@ -285,6 +285,7 @@ export const friendRequest = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: "Friend Request sent successfully",
+      data: newRes
     });
   } catch (error) {
     console.log(error);
@@ -402,11 +403,15 @@ export const suggestedFriends = async (req, res) => {
   try {
     const { userId } = req.body.user;
 
-    let queryObject = {};
+    const friendRequests = await FriendRequest.find({ requestFrom: userId }).select("requestTo");
+    
+    const requestedUserIds = friendRequests.map(request => request.requestTo);
 
-    queryObject._id = { $ne: userId };
+    let queryObject = { _id: { $ne: userId } }
 
+    queryObject._id = { $ne: userId, $nin: requestedUserIds };
     queryObject.friends = { $nin: userId };
+
 
     let queryResult = Users.find(queryObject)
       .limit(15)
@@ -423,3 +428,64 @@ export const suggestedFriends = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+export const getRequestedFriendRequest = async (req, res) => {
+  try {
+    const { userId } = req.body.user;
+
+    const request = await FriendRequest.find({
+      requestFrom: userId,
+      requestStatus: "Pending",
+    })
+      .populate({
+        path: "requestFrom",
+        select: "firstName lastName profileUrl profession -password",
+      })
+      .limit(10)
+      .sort({
+        _id: -1,
+      });
+
+    res.status(200).json({
+      success: true,
+      data: request,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "auth error",
+      success: false,
+      error: error.message,
+    });
+  }
+}
+
+export const cancelFriendRequest = async (req, res) => {
+  try{
+    const { userId } = req.body.user;
+    const { requestTo } = req.body;
+
+    const deletedRequest = await FriendRequest.findOneAndDelete({
+      requestFrom: userId,
+      requestTo,
+    });
+
+    if (!deletedRequest) {
+      return res.status(404).json({
+        success: false,
+        message: "Friend request not found or already canceled.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Friend request canceled successfully.",
+    });
+  }catch(e){
+    res.status(500).json({
+      success: false,
+      message: "Error canceling friend request.",
+      error: error.message,
+    });
+  }
+}

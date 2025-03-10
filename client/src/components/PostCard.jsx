@@ -287,7 +287,6 @@ const PostCard = ({ post, user, likePost }) => {
           <div
             className="flex gap-1 items-center text-base text-ascent-1 cursor-pointer"
             onClick={() => dispatch(openModal({ modalType: "deletePost", modalProps: { postId: post._id} }))}
-            // onClick={() => deletePost(post?._id)}
           >
             <MdOutlineDeleteOutline size={20} />
             <span>Delete</span>

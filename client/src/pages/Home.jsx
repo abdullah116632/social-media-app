@@ -13,8 +13,10 @@ import {
 import { Link } from "react-router-dom";
 import { NoProfile } from "../assets";
 import { BsPersonFillAdd } from "react-icons/bs";
+import { FaArrowCircleRight } from "react-icons/fa";
 import {
   apiRequest,
+  cancelFriendRequest,
   fetchPosts,
   getUserInfo,
   likePost,
@@ -29,6 +31,7 @@ const Home = () => {
   const [friendRequest, setFriendRequest] = useState([]);
   const [suggestedFriends, setSuggestedFriends] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [sentFrinendRequest, setSentFriendRequest] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -38,7 +41,6 @@ const Home = () => {
   //   reset,
   //   formState: { errors },
   // } = useForm();
-
 
   const fetchPost = async () => {
     await fetchPosts(user?.token, dispatch);
@@ -77,10 +79,19 @@ const Home = () => {
     try {
       const res = await sendFriendRequest(user.token, id);
       await fetchFriendRequests();
+      setSentFriendRequest(res?.data.requestTo);
     } catch (err) {
       console.log(err);
     }
   };
+  const cancelRequest = async (id) => {
+      try{
+        const res = await cancelFriendRequest(user.token, id);
+        setSentFriendRequest(null);
+      }catch(err){
+        console.log(err)
+      }
+    }
   const acceptFriendRequest = async (id, status) => {
     try {
       const res = await apiRequest({
@@ -222,14 +233,28 @@ const Home = () => {
                     </Link>
 
                     <div className="flex gap-1">
-                      <button
-                        className="bg-[#0444a430] text-sm text-white p-1 rounded"
-                        onClick={() => {
-                          handleFriendRequest(friend?._id);
-                        }}
-                      >
-                        <BsPersonFillAdd size={20} className="text-[#0f52b6]" />
-                      </button>
+                      {sentFrinendRequest === friend._id ? (
+                        <button
+                          className="bg-[#0444a430] text-sm text-white p-1 rounded"
+                          onClick={() => {}}
+                        >
+                          <FaArrowCircleRight
+                            size={20}
+                            className="text-[#0f52b6]"
+                            onClick={() => cancelRequest(friend._id)}
+                          />
+                        </button>
+                      ) : (
+                        <button
+                          className="bg-[#0444a430] text-sm text-white p-1 rounded"
+                          onClick={() => {handleFriendRequest(friend._id)}}
+                        >
+                          <BsPersonFillAdd
+                            size={20}
+                            className="text-[#0f52b6]"
+                          />
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -240,7 +265,6 @@ const Home = () => {
       </div>
 
       {edit && <EditProfile />}
-
     </>
   );
 };

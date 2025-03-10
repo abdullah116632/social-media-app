@@ -1,6 +1,6 @@
 import express from "express";
 import path from "path";
-import { acceptRequest,  friendRequest, getFriendRequest, getUser, profileViews, requestPasswordReset, resetPassword, suggestedFriends, updateUser, verifyEmail } from "../controllers/userController.js";
+import { acceptRequest,  friendRequest, getFriendRequest, getUser, profileViews, requestPasswordReset, resetPassword, suggestedFriends, updateUser, verifyEmail, getRequestedFriendRequest, cancelFriendRequest } from "../controllers/userController.js";
 import userAuth from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -19,6 +19,8 @@ router.put("/update-user", userAuth, updateUser);
 // friend request
 router.post("/friend-request", userAuth, friendRequest);
 router.post("/get-friend-request", userAuth, getFriendRequest);
+router.post("/get-requested-friend-request", userAuth, getRequestedFriendRequest)
+router.post("/cancel-friend-request", userAuth, cancelFriendRequest);
 
 // accept / deny friend request
 router.post("/accept-request", userAuth, acceptRequest);
