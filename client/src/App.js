@@ -4,6 +4,9 @@ import { Home, Login, Profile, Register, ResetPassword, ForgetPassword } from ".
 import Modal from "./components/Modal"
 import NotFoundPage from "./pages/NotFoundPage";
 import SearchResult from "./pages/SearchResult";
+import { FriendsCard } from "./components";
+import FriendRequest from "./components/FriendRequest";
+import SuggestedFriends from "./components/SuggestedFriends";
 
 function Layout(){
   const {user} = useSelector((state) => state.user);
@@ -20,6 +23,7 @@ function Layout(){
 
 function App() {
   const {theme} = useSelector((state) => state.theme)
+  const { user } = useSelector((state) => state.user);
   const {openResultBox} = useSelector((state) => state.search);
   return (
     <div data-theme={theme} className="w-full min-h-[100vh]">
@@ -29,6 +33,9 @@ function App() {
           <Route path="/profile/:id?" element={<Profile />} />
         </Route>
 
+        <Route path="/friends" element={<FriendsCard friends={user?.friends} />} />
+        <Route path="/friend-request" element={<FriendRequest />} />
+        <Route path="/friend-suggestion" element={<SuggestedFriends />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forget-password" element={<ForgetPassword />} />

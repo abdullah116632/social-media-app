@@ -47,14 +47,15 @@ const Profile = () => {
 
   return (
     <>
-      <div className='home w-full px-0 md:px-4 bg-bgColor h-screen overflow-hidden'>
+      <div className='home w-full px-0 md:px-4 bg-bgColor h-screen overflow-auto'>
         <TopBar />
-        <div className='w-full flex gap-2 lg:gap-4 pt-2 h-full'>
-          {/* LEFT */}
-          <div className='hidden w-1/3 lg:w-[30%] h-full md:flex flex-col gap-6 overflow-y-auto'>
+        {/* md:h-full */}
+        <div className='w-full flex flex-col lg:flex-row justify-center items-center overflow-auto md:justify-normal md:items-start lg:h-full gap-2 lg:gap-4 pt-2 '>
+          {/* LEFT md:h-full */}
+          <div className='w-full  lg:w-[30%]  md:flex flex-col gap-6 overflow-y-auto lg:h-full'> 
             <ProfileCard user={userInfo} />
 
-            <div className='block lg:hidden'>
+            <div className='block md:hidden'>
               <FriendsCard friends={userInfo?.friends} />
             </div>
           </div>

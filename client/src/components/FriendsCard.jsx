@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { NoProfile } from "../assets";
 
-const FriendsCard = ({ friends }) => {
+const FriendsCard = ({friends}) => {
   return (
     <div>
       <div className='w-full bg-primary shadow-sm rounded-lg px-6 py-5'>

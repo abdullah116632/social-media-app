@@ -88,7 +88,7 @@ const SearchResult = () => {
         </div>
         <div
           className={`inline-block align-bottom w-full ${
-            result.users?.length > 0 || result.posts?.length > 0
+            result?.users?.length > 0 || result?.posts?.length > 0
               ? `bg-bgColor`
               : `bg-primary`
           } rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle `}
@@ -111,10 +111,10 @@ const SearchResult = () => {
           <div className="px-4 sm:px-6 flex flex-col gap-3 2xl:gap-6">
             {/* USERS */}
             <div>
-              {result.users?.length > 0 && (
+              {result?.users?.length > 0 && (
                 <h3 className=" text-xl text-blue mb-4">Peoples</h3>
               )}
-              {result.users?.map((user) => (
+              {result?.users?.map((user) => (
                 <div
                   key={user._id}
                   className="w-full flex items-center justify-between border-b bg-primary rounded-lg pb-5 border-[#66666645]"
@@ -144,16 +144,17 @@ const SearchResult = () => {
                   <div className="pr-3 pt-5">
                     {friendRequestId?.includes(user._id) ? (
                       <button
+                      onClick={() => cancelRequest(user._id)}
                         className="bg-[#0444a430] text-sm text-white p-1 rounded"
                       >
-                        <FaArrowCircleRight size={20} className="text-[#0f52b6]" onClick={() => cancelRequest(user._id)} />
+                        <FaArrowCircleRight size={20} className="text-[#0f52b6]" />
                       </button>
                     ) : (
                       <button
                         className="bg-[#0444a430] text-sm text-white p-1 rounded"
-                        onClick={() => {}}
+                        onClick={() => handleFriendRequest(user._id)}
                       >
-                        <BsPersonFillAdd size={20} className="text-[#0f52b6]" onClick={() => handleFriendRequest(user._id)} />
+                        <BsPersonFillAdd size={20} className="text-[#0f52b6]" />
                       </button>
                     )}
                   </div>
@@ -165,8 +166,8 @@ const SearchResult = () => {
               <h3 className=" text-xl text-blue mb-4">Posts</h3>
               {loading ? (
                 <Loading />
-              ) : result.posts?.length > 0 ? (
-                result.posts?.map((post) => (
+              ) : result?.posts?.length > 0 ? (
+                result?.posts?.map((post) => (
                   <div onClick={handleSearchBoxClose}>
                     <PostCard
                       key={post?._id}

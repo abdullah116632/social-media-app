@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Loading from "./Loading";
 
 const PostForm = () => {
-  const { user, edit } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const [posting, setPosting] = useState(false);
