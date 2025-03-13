@@ -1,4 +1,5 @@
 import { TiSocialSkypeOutline } from "react-icons/ti";
+import { SiRipple } from "react-icons/si";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import TextInput from "./TextInput";
@@ -51,12 +52,12 @@ const TopBar = () => {
   return (
     <div className="topbar w-full flex items-center justify-between py-3 px-4 bg-primary md:rounded-b-lg">
       {/* logo */}
-      <Link to="/" className="flex gap-1 md:gap-2 items-center">
+      <Link to="/" className="flex gap-2 md:gap-4 items-center">
         <div className="p-1 md:p-2 bg-[#065ad8] rounded text-white">
-          <TiSocialSkypeOutline />
+        <SiRipple />
         </div>
         <span className="text-xl md:text-2xl text-[#065ad8] font-semibold">
-          Funbook
+          Vibe
         </span>
       </Link>
 
