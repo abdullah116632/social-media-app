@@ -32,14 +32,17 @@ const SideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
           <li className="p-2 hover:bg-ascent-2 hover:text-[#a31212] hover:font-bold cursor-pointer" onClick={() => {setIsMenuOpen(false); navigate("/profile/" + user?._id)}}>
             My Profile
           </li>
-          <li className="p-2 hover:bg-ascent-2 hover:text-[#a31212] hover:font-bold cursor-pointer" onClick={() => {setIsMenuOpen(false); navigate("/friends")}}>
+          <li className="p-2 lg:hidden hover:bg-ascent-2 hover:text-[#a31212] hover:font-bold cursor-pointer" onClick={() => {setIsMenuOpen(false); navigate("/friends")}}>
             Friends
           </li>
-          <li className="p-2 hover:bg-ascent-2 hover:text-[#a31212] hover:font-bold cursor-pointer" onClick={() => {setIsMenuOpen(false); navigate("/friend-request")}}>
+          <li className="p-2 lg:hidden hover:bg-ascent-2 hover:text-[#a31212] hover:font-bold cursor-pointer" onClick={() => {setIsMenuOpen(false); navigate("/friend-request")}}>
             Friend Request
           </li>
-          <li className="p-2 hover:bg-ascent-2 hover:text-[#a31212] hover:font-bold cursor-pointer" onClick={() => {setIsMenuOpen(false); navigate("/friend-suggestion")}}>
+          <li className="p-2 lg:hidden hover:bg-ascent-2 hover:text-[#a31212] hover:font-bold cursor-pointer" onClick={() => {setIsMenuOpen(false); navigate("/friend-suggestion")}}>
             Friend Suggestion
+          </li>
+          <li className="p-2 hover:bg-ascent-2 hover:text-[#a31212] hover:font-bold cursor-pointer" onClick={() => {setIsMenuOpen(false); navigate(`/reset-password`)}}>
+            Reset Password
           </li>
           <li className="p-2 hover:bg-ascent-2 hover:text-[#a31212] hover:font-bold cursor-pointer" onClick={() => dispatch(openModal({ modalType: "logoutConfirm" }))}>
             Logout

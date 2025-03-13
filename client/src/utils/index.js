@@ -3,8 +3,9 @@ import { SetPosts } from "../redux/postSlice";
 import { SetResult } from "../redux/searchSlice";
 
 const cloudName = process.env.REACT_APP_CLOUD_NAME;
+const API_URL = process.env.REACT_APP_BACKEND_API_URL
 
-const API_URL = "http://localhost:8800";
+// const API_URL = "http://localhost:8800";
 
 export const API = axios.create({
   baseURL: API_URL,
@@ -13,6 +14,7 @@ export const API = axios.create({
 
 export const apiRequest = async ({ url, token, data, method }) => {
   try {
+    console.log(API_URL)
     const result = await API(url, {
       method: method || "GET",
       data: data,
@@ -44,13 +46,16 @@ export const handleFileUpload = async (uploadFile) => {
     formData.append("signature", signature);
     formData.append("api_key", api_key);
 
-    const response = await axios.post(
-      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
-    );
+    const isVideo = uploadFile.type.startsWith("video/");
+
+    const cloudinaryEndpoint = isVideo
+      ? `https://api.cloudinary.com/v1_1/${cloudName}/video/upload` // Change to 'video/upload' for videos
+      : `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+
+
+    const response = await axios.post(cloudinaryEndpoint, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
     return response.data.secure_url; 
   } catch (error) {

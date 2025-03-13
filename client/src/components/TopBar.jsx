@@ -98,7 +98,7 @@ const TopBar = () => {
             title="Log Out"
             containerStyles="hidden lg:flex text-sm text-ascent-1 px-4 md:px-6 py-1 md:py-2 border border-[#666] rounded-full"
           />
-            <div className="lg:hidden">
+            <div className="">
             <HiOutlineMenu className="cursor-pointer" onClick={() => setIsMenuOpen(true)} />
             </div>
       </div>

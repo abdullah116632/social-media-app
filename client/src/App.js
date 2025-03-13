@@ -36,10 +36,11 @@ function App() {
         <Route path="/friends" element={<FriendsCard friends={user?.friends} />} />
         <Route path="/friend-request" element={<FriendRequest />} />
         <Route path="/friend-suggestion" element={<SuggestedFriends />} />
+        {/* <Route path="/reset-password" element */}
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
-        <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       {openResultBox && <SearchResult />}

@@ -193,8 +193,13 @@ const PostCard = ({ post, user, likePost }) => {
     await getComments(post?._id);
   };
 
+  const isVideo = (url) => {
+    return url?.match(/\.(mp4|webm|ogg|mov|avi|mkv)$/i);
+  };
+
   return (
     <div className="mb-2 bg-primary p-4 rounded-xl">
+      {/* top */}
       <div className="flex gap-3 items-center mb-2">
         <Link to={"/profile/" + post?.userId?._id}>
           <img
@@ -204,7 +209,7 @@ const PostCard = ({ post, user, likePost }) => {
           />
         </Link>
 
-        <div className="w-full flex justify-between">
+        <div className="flex flex-1 justify-between">
           <div className="">
             <Link to={"/profile/" + post?.userId?._id}>
               <p className="font-medium text-lg text-ascent-1">
@@ -223,6 +228,7 @@ const PostCard = ({ post, user, likePost }) => {
         </div>
       </div>
 
+      {/* description and image */}
       <div>
         <p className="text-ascent-2">
           {showAll === post?._id
@@ -247,15 +253,34 @@ const PostCard = ({ post, user, likePost }) => {
             ))}
         </p>
 
-        {post?.image && (
+        {post.image && (
+        <div className="mt-2">
+          {isVideo(post.image) ? (
+            <video
+              src={post.image}
+              controls
+              className="w-full rounded-lg"
+            />
+          ) : (
+            <img
+              src={post.image}
+              alt="Post"
+              className="w-full rounded-lg"
+            />
+          )}
+        </div>
+      )}
+
+        {/* {post?.image && (
           <img
             src={post?.image}
             alt="post image"
             className="w-full mt-2 rounded-lg"
           />
-        )}
+        )} */}
       </div>
 
+        {/* bottom */}
       <div
         className="mt-4 flex justify-between items-center px-3 py-2 text-ascent-2
       text-base border-t border-[#66666645]"

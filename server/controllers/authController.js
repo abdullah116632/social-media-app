@@ -94,16 +94,13 @@ export const login = async (req, res, next) => {
 
 export const generateSignature = async (req, res, next) => {
   try {
-    const timestamp = Math.round(new Date().getTime() / 1000); // Cloudinary requires a timestamp
+    const timestamp = Math.round(new Date().getTime() / 1000); 
 
     const paramsToSign = {
       folder: "socialmedia/uploads",
       timestamp: timestamp,
-      upload_preset: "socialmedia",  // ✅ Ensure this is included
+      upload_preset: "socialmedia",  
     };
-
-    // const stringToSign = `folder=${params.folder}&timestamp=${params.timestamp}&upload_preset=${params.upload_preset}`;
-    // console.log("String to Sign:", stringToSign);
 
     console.log("api secret", process.env.CLOUDINARY_API_SECRET)
     
@@ -118,7 +115,7 @@ export const generateSignature = async (req, res, next) => {
     res.json({
       signature,
       timestamp,
-      api_key: process.env.CLOUDINARY_API_KEY,  // ✅ Include API key
+      api_key: process.env.CLOUDINARY_API_KEY, 
     });
   } catch (error) {
     console.error("Signature Generation Error:", error);

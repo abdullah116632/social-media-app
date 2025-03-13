@@ -28,6 +28,7 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
+    console.log(data)
     try{
       const res = await apiRequest({
         url: "/auth/login",

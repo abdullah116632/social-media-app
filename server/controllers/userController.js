@@ -1,5 +1,6 @@
 import path from "path";
-import mongoose from "mongoose";
+import { promises as fs } from "fs";
+import crypto from "crypto";
 import Verification from "../models/emailVerification.js";
 import Users from "../models/userModel.js";
 import { compareString, createJWT, hashString } from "../utils/index.js";
@@ -65,6 +66,34 @@ export const verifyEmail = async (req, res) => {
     return res.redirect(`/users/verified?status=error&message=${message}`);
   }
 };
+
+export const verifiedUser = async (req, res) => {
+  // res.sendFile(path.join(__dirname, "./views", "index.html"));
+  try {
+      const frontendUrl = process.env.FRONTEND_URL;
+
+      const filePath = path.join(__dirname, "./views", "index.html");
+
+      let data = await fs.readFile(filePath, "utf8");
+      
+      const inlineScript = `window.FRONTEND_URL = "${frontendUrl}";`;
+
+      // Generate SHA-256 hash of the script
+      const hash = crypto.createHash("sha256").update(inlineScript).digest("base64");
+
+      res.setHeader(
+          "Content-Security-Policy",
+          `script-src 'self' 'sha256-${hash}';`
+      );
+
+      data = data.replace("<head>", `<head><script>${inlineScript}</script>`);
+
+      res.send(data);
+  } catch (err) {
+      console.error("Error loading file:", err);
+      res.status(500).send("Error loading page");
+  }
+}
 
 export const requestPasswordReset = async (req, res) => {
   try {
@@ -169,14 +198,39 @@ export const resetPassword = async (req, res) => {
   }
 };
 
-// export const changePassword = async (req, res, next) => {
-//   try {
-//     const { userId, password } = req.body;
-//   } catch (error) {
-//     console.log(error);
-//     res.status(404).json({ message: error.message });
-//   }
-// };
+export const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    console.log(req.body)
+    const {userId} = req.body.user; 
+
+    if(!currentPassword || !newPassword){
+      return res.status(400).json({success: false, message: "current or newPassword is missing"})
+    }
+
+    const user = await Users.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const isMatch = await compareString(currentPassword, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ success: false, message: "Incorrect old password" });
+    }
+
+    const hashedPassword = await hashString(newPassword);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ success: true, message: "Password updated successfully" });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error", error: error.message });
+  }
+};
 
 export const getUser = async (req, res, next) => {
   try {
